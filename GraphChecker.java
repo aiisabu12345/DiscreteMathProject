@@ -156,13 +156,33 @@ public class GraphChecker {
     }
 
     public void prim() {
-        Queue<Vertex> vCanGo = new LinkedList<>();
         Set<Vertex> passVertexs = new HashSet<>();
-        vCanGo.add(allVertex.get(0));
-        while(!vCanGo.isEmpty()){
-            Vertex cur = vCanGo.poll();
-            passVertexs.add(cur);
+        Queue<Edge> mst = new LinkedList<>();
+        Queue<Edge> connectedEdges = new PriorityQueue<>();
+        Vertex root = allVertex.get(0);
+        passVertexs.add(root);
+        root.getAllEdge().forEach(connectedEdges::add);
+        while (!connectedEdges.isEmpty()) {
+            Edge cur = connectedEdges.poll();
+            Vertex v2 = getOtherVertex(cur, passVertexs);
+            if (v2 == null) {
+                continue;
+            }
+            v2.getAllEdge().forEach(connectedEdges::add);
+            passVertexs.add(v2);
+            mst.add(cur);
         }
+
+        System.out.println(mst);
+    }
+
+    public Vertex getOtherVertex(Edge e, Set<Vertex> passVertexs) {
+        for (Vertex v : e.getAllVertex()) {
+            if (!passVertexs.contains(v)) {
+                return v;
+            }
+        }
+        return null;
     }
 
     public void kruskal() {
