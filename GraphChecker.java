@@ -155,6 +155,44 @@ public class GraphChecker {
         return passedVertex.size() == allVertex.size();
     }
 
+    public void spanningTree() {                                                //เช็ค spanning tree
+        if (allEdge.size() != allVertex.size() - 1) {                           //ถ้า edge ไม่เท่ากับ vertex-1 แสดงว่าไม่ใช่ spanning tree
+            System.out.println("Graph is NOT a Spanning Tree");
+            return;
+        }
+        
+        Set<Vertex> visited = new HashSet<>();                                  //เก็บ vertex ตัวที่ไปถึงแล้ว
+        
+        Queue<Vertex> queue = new LinkedList<>();                               //เก็บ vertex ที่จะไปตรวจต่อ
+
+        Vertex start = allVertex.get(0);                                 //เลือกจุดเริ่ม เริ่มจาก vertex ตัวแรก แล้วเพิ่มใน visited กับ queue
+        visited.add(start);
+        queue.add(start);
+        
+        while (!queue.isEmpty()) {                                              //ทำการลูปจนกว่า queue จะว่าง
+            
+            Vertex current = queue.poll();                                      //ดึง vertex ปัจจุบันออกมา
+            
+            for (Edge e : current.getAllEdge()) {                               //วนดู Edge ทุกเส้นที่เชื่อมกับ current
+                for (Vertex v : e.getAllVertex()) {                             //วนดู Vertex ที่อยู่ใน Edge นั้น
+                    
+                    if (!visited.contains(v)) {                                 //ถ้า vertex นี้ ยังไม่เคย visited เพิ่มเข้า visited กับ queue แล้วไปต่อ
+                        visited.add(v);
+                        queue.add(v);
+                    }
+                }
+            }
+        }
+
+        if (visited.size() == allVertex.size()) {                               //ตรวจว่าครบทุก vertex ไหม ถ้าเท่ากันแปลว่า graph เชื่อมต่อกันทั้งหมด แสดงว่าเป็น spanning tree
+            System.out.println("Graph is a Spanning Tree");
+        } 
+        
+        else {                                                                  //ถ้าไม่เท่ากัน แปลว่า graph ไม่ connected แสดงว่าไม่เป็น spanning tree
+            System.out.println("Graph is NOT a Spanning Tree");
+        }
+    }
+
     public void prim() {
         Queue<Vertex> vCanGo = new LinkedList<>();
         Set<Vertex> passVertexs = new HashSet<>();
