@@ -169,7 +169,6 @@ public class GraphChecker {
                 continue;
             }
             v2.getAllEdge().forEach(connectedEdges::add);
-            System.out.println(cur + " " + v2);
             passVertexs.add(v2);
             mst.add(cur);
         }
