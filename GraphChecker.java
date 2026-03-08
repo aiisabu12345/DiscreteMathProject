@@ -155,28 +155,29 @@ public class GraphChecker {
         return passedVertex.size() == allVertex.size();
     }
 
-    public void spanningTree() {                                                //เช็ค spanning tree
-        if (allEdge.size() != allVertex.size() - 1) {                           //ถ้า edge ไม่เท่ากับ vertex-1 แสดงว่าไม่ใช่ spanning tree
+    public void spanningTree() { // เช็ค spanning tree
+        if (allEdge.size() != allVertex.size() - 1) { // ถ้า edge ไม่เท่ากับ vertex-1 แสดงว่าไม่ใช่ spanning tree
             System.out.println("Graph is NOT a Spanning Tree");
             return;
         }
-        
-        Set<Vertex> visited = new HashSet<>();                                  //เก็บ vertex ตัวที่ไปถึงแล้ว
-        
-        Queue<Vertex> queue = new LinkedList<>();                               //เก็บ vertex ที่จะไปตรวจต่อ
 
-        Vertex start = allVertex.get(0);                                 //เลือกจุดเริ่ม เริ่มจาก vertex ตัวแรก แล้วเพิ่มใน visited กับ queue
+        Set<Vertex> visited = new HashSet<>(); // เก็บ vertex ตัวที่ไปถึงแล้ว
+
+        Queue<Vertex> queue = new LinkedList<>(); // เก็บ vertex ที่จะไปตรวจต่อ
+
+        Vertex start = allVertex.get(0); // เลือกจุดเริ่ม เริ่มจาก vertex ตัวแรก แล้วเพิ่มใน visited กับ queue
         visited.add(start);
         queue.add(start);
-        
-        while (!queue.isEmpty()) {                                              //ทำการลูปจนกว่า queue จะว่าง
-            
-            Vertex current = queue.poll();                                      //ดึง vertex ปัจจุบันออกมา
-            
-            for (Edge e : current.getAllEdge()) {                               //วนดู Edge ทุกเส้นที่เชื่อมกับ current
-                for (Vertex v : e.getAllVertex()) {                             //วนดู Vertex ที่อยู่ใน Edge นั้น
-                    
-                    if (!visited.contains(v)) {                                 //ถ้า vertex นี้ ยังไม่เคย visited เพิ่มเข้า visited กับ queue แล้วไปต่อ
+
+        while (!queue.isEmpty()) { // ทำการลูปจนกว่า queue จะว่าง
+
+            Vertex current = queue.poll(); // ดึง vertex ปัจจุบันออกมา
+
+            for (Edge e : current.getAllEdge()) { // วนดู Edge ทุกเส้นที่เชื่อมกับ current
+                for (Vertex v : e.getAllVertex()) { // วนดู Vertex ที่อยู่ใน Edge นั้น
+
+                    if (!visited.contains(v)) { // ถ้า vertex นี้ ยังไม่เคย visited เพิ่มเข้า visited กับ queue
+                                                // แล้วไปต่อ
                         visited.add(v);
                         queue.add(v);
                     }
@@ -184,11 +185,12 @@ public class GraphChecker {
             }
         }
 
-        if (visited.size() == allVertex.size()) {                               //ตรวจว่าครบทุก vertex ไหม ถ้าเท่ากันแปลว่า graph เชื่อมต่อกันทั้งหมด แสดงว่าเป็น spanning tree
+        if (visited.size() == allVertex.size()) { // ตรวจว่าครบทุก vertex ไหม ถ้าเท่ากันแปลว่า graph เชื่อมต่อกันทั้งหมด
+                                                  // แสดงว่าเป็น spanning tree
             System.out.println("Graph is a Spanning Tree");
-        } 
-        
-        else {                                                                  //ถ้าไม่เท่ากัน แปลว่า graph ไม่ connected แสดงว่าไม่เป็น spanning tree
+        }
+
+        else { // ถ้าไม่เท่ากัน แปลว่า graph ไม่ connected แสดงว่าไม่เป็น spanning tree
             System.out.println("Graph is NOT a Spanning Tree");
         }
     }
@@ -212,6 +214,9 @@ public class GraphChecker {
         }
 
         System.out.println(mst);
+        System.out.println(mst.stream()
+                .map(Edge::getValue)
+                .reduce(0, (a, b) -> a + b));
     }
 
     public Vertex getOtherVertex(Edge e, Set<Vertex> passVertexs) {
@@ -224,46 +229,64 @@ public class GraphChecker {
     }
 
     public void kruskal() {
-        Queue<Edge> currentEdges = new PriorityQueue<>(allEdge);
-        Set<Vertex> saveVertexs = new HashSet<>();
-        Set<Edge> saveEdges = new HashSet<>();
-        Set<Edge> deleteEdges = new HashSet<>();
-        int max = allVertex.size();
-        System.out.println("max : " + max);
-        while (!currentEdges.isEmpty()) {
-            Edge edge = currentEdges.poll();
-            int useVertex = 0;
-            Set<Vertex> edgeConnectVertexs = edge.getAllVertex();
-            for (Vertex vertex : edgeConnectVertexs) {
-                if (saveVertexs.contains(vertex)){
-                    useVertex++;
-                }
+        Queue<Edge> pqEdge = new PriorityQueue<>(graph);
+        Set<Vertex> passedVertex = new HashSet<>();
+        Queue<Edge> mst = new LinkedList<>();
+
+        while (!pqEdge.isEmpty()) {
+            Edge cur = pqEdge.poll();
+            Set<Vertex> passedVertexs = new HashSet<>();
+
+            if (isCircle(mst, cur)) {
+                continue;
             }
-            if (!saveEdges.contains(edge) && useVertex < 2) {
-                for (Vertex vertex : edgeConnectVertexs) {
-                    saveVertexs.add(vertex);
-                }
-                saveEdges.add(edge);
+
+            cur.getAllVertex().forEach(passedVertexs::add);
+            mst.add(cur);
+        }
+        System.out.println(mst);
+        System.out.println(mst.stream()
+                .map(Edge::getValue)
+                .reduce(0, (a, b) -> a + b));
+    }
+
+    public boolean isCircle(Queue<Edge> oriEdges, Edge edge) {
+        Vertex vStart = edge.getAllVertex().iterator().next();
+        Set<Edge> temEdges = new HashSet<>(oriEdges);
+        temEdges.add(edge);
+        Queue<Edge> temQueue = new LinkedList<>();
+        Set<Vertex> passedVertex = new HashSet<>();
+        Set<Edge> passedEdges = new HashSet<>();
+
+        vStart.getAllEdge().forEach(e -> {
+            if (temEdges.contains(e)) {
+                temQueue.add(e);
             }
-            else{
-                System.out.println("not count" + edge + "vertexs : " + edge.getAllVertex());
-                deleteEdges.add(edge);
-            }
-            if (max == saveVertexs.size()) {
-                break;
+        });
+        passedVertex.add(vStart);
+
+        // debug
+        if (edge.getValue() == 4) {
+            System.out.println("temEdges = " + temEdges);
+        }
+
+        while (!temQueue.isEmpty()) {
+            Edge cur = temQueue.poll();
+            passedEdges.add(cur);
+
+            Vertex v = getOtherVertex(cur, passedVertex);
+            if (v != null) {
+                passedVertex.add(v);
+                v.getAllEdge().forEach(e -> {
+                    if (temEdges.contains(e) && !passedEdges.contains(e)) {
+                        temQueue.add(e);
+                    }
+                });
+            } else {
+                return true;
             }
         }
 
-       // setAllEdge(newEdges);
-        while (!CheckContinue()) { 
-            
-        }
-        for (Edge edge : saveEdges) {
-            System.out.print(edge.getName() + " with vertexs: ");
-            for (Vertex vertex : edge.getAllVertex()) {
-               System.out.print(vertex.getName() + " ");
-            }
-            System.out.println("");
-        }
+        return false;
     }
 }
