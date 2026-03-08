@@ -41,4 +41,16 @@ public class Edge implements Comparable<Edge> {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Edge other = (Edge) obj;
+        return name.equals(other.name);
+    }
 }
