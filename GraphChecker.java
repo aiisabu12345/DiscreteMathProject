@@ -186,6 +186,46 @@ public class GraphChecker {
     }
 
     public void kruskal() {
+        Queue<Edge> currentEdges = new PriorityQueue<>(allEdge);
+        Set<Vertex> saveVertexs = new HashSet<>();
+        Set<Edge> saveEdges = new HashSet<>();
+        Set<Edge> deleteEdges = new HashSet<>();
+        int max = allVertex.size();
+        System.out.println("max : " + max);
+        while (!currentEdges.isEmpty()) {
+            Edge edge = currentEdges.poll();
+            int useVertex = 0;
+            Set<Vertex> edgeConnectVertexs = edge.getAllVertex();
+            for (Vertex vertex : edgeConnectVertexs) {
+                if (saveVertexs.contains(vertex)){
+                    useVertex++;
+                }
+            }
+            if (!saveEdges.contains(edge) && useVertex < 2) {
+                for (Vertex vertex : edgeConnectVertexs) {
+                    saveVertexs.add(vertex);
+                }
+                saveEdges.add(edge);
+            }
+            else{
+                System.out.println("not count" + edge + "vertexs : " + edge.getAllVertex());
+                deleteEdges.add(edge);
+            }
+            if (max == saveVertexs.size()) {
+                break;
+            }
+        }
 
+       // setAllEdge(newEdges);
+        while (!CheckContinue()) { 
+            
+        }
+        for (Edge edge : saveEdges) {
+            System.out.print(edge.getName() + " with vertexs: ");
+            for (Vertex vertex : edge.getAllVertex()) {
+               System.out.print(vertex.getName() + " ");
+            }
+            System.out.println("");
+        }
     }
 }
