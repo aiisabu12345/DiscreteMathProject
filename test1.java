@@ -55,6 +55,6 @@ public class test1 {
         // Kruskal จะเริ่มเลือกจาก e19(1), e4(2), e8(2), e1(3), e21(3) ... เป็นต้น
         checker.kruskal();
         System.out.println("\n### การหา Minimum Spanning Tree (Prim) ###");
-        checker.prim();
+        checker.prim("1");
     }
 }

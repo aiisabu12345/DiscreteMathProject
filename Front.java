@@ -81,7 +81,9 @@ public class Front {
                     g.spanningTree();
                     break;
                 case '2':
-                    g.prim();
+                    System.out.println("Enter root vertex:");
+                    String root = sc.nextLine();
+                    g.prim(root);
                     break;
                 case '3':
                     g.kruskal();

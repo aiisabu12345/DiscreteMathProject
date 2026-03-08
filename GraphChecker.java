@@ -195,11 +195,11 @@ public class GraphChecker {
         }
     }
 
-    public void prim() {
+    public void prim(String rootString) {
         Set<Vertex> passVertexs = new HashSet<>();
         Queue<Edge> mst = new LinkedList<>();
         Queue<Edge> connectedEdges = new PriorityQueue<>();
-        Vertex root = allVertex.get(0);
+        Vertex root = findVertexByName(rootString);
         passVertexs.add(root);
         root.getAllEdge().forEach(connectedEdges::add);
         while (!connectedEdges.isEmpty()) {

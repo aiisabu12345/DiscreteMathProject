@@ -24,7 +24,7 @@ public class GraphCheckerTest {
         graphChecker.setAllVertex("A B C D");
         graphChecker.setAllEdge("e1 e2 e3 e4 e5");
         graphChecker.setTransitionFunc("e1,A,B,1 e2,A,C,4 e3,B,C,2 e4,B,D,5 e5,C,D,3");
-        graphChecker.prim();
+        graphChecker.prim("A");
     }
 
     public void testPrimComplex() {
@@ -38,6 +38,6 @@ public class GraphCheckerTest {
                 "e36,3,6,12 e37,3,7,12 e38,3,8,16 e45,4,5,19 " +
                 "e57,5,7,11 e68,6,8,11 e78,7,8,9");
 
-        graphChecker.prim();
+        graphChecker.prim("0");
     }
 }
