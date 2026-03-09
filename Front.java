@@ -82,6 +82,7 @@ public class Front {
                     break;
                 case '2':
                     System.out.println("Enter root vertex:");
+                    sc.nextLine();
                     String root = sc.nextLine();
                     g.prim(root);
                     break;
