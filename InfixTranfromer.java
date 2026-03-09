@@ -2,46 +2,50 @@ import java.util.Stack;
 
 public class InfixTranfromer {
     public String findInToPost(String infix){
-        Stack<Character> op = new Stack<>();
-        Stack<String> post = new Stack<>();
-        int i = 0;
+        Stack<Character> op = new Stack<>();                                                    // Stack op มีหน้าที่เก็บ operator                     
+        Stack<String> post = new Stack<>();                                                     // Stack post มีหน้าที่เก็บตัวเลข และ postfix 
+        int i = 0;                                                                              
 
-        while(i< infix.length()){
-            if(infix.charAt(i) >= '0' && infix.charAt(i) <= '9'){
-                String tem = "";
-                while(i< infix.length() && infix.charAt(i) >= '0' && infix.charAt(i) <= '9'){
+        while(i< infix.length()){                                                               // i จะเพิ่มไปเรื่อยๆจนกว่าจะครบสมการ infix
+            if(infix.charAt(i) >= '0' && infix.charAt(i) <= '9'){                               // เงื่อนไขตรวจสอบตัวเลขหรือเครื่องหมาย
+                String tem = "";                                                                // tem นำ character เลขแต่ละหลักมารวมเป็น string
+                while(i< infix.length() && infix.charAt(i) >= '0'                               // เงื่อนไขตรวจสอบหลักที่เป็นเลข
+                        && infix.charAt(i) <= '9'){
                     tem += infix.charAt(i);
-                    i++;
+                    i++;                                                                        // post เก็บ tem
                 }
                 post.push(tem);
             }
             else{
-                if(infix.charAt(i) == ')'){
-                    while(!op.isEmpty()&&op.peek() != '('){
-                        post.push(String.valueOf(op.pop()));
+                if(infix.charAt(i) == ')'){                                                     // เงื่อนไชดัก ) 
+                    while(!op.isEmpty()&&op.peek() != '('){                                     // เงื่อนไขเก็บ operator จนกว่าจะเจอ (
+                        post.push(String.valueOf(op.pop()));                                    
                     }
-                    if(!op.isEmpty())op.pop();
+                    if(!op.isEmpty())op.pop();                                                  //เงื่อนไขให้ op pop อีกหากยังมีอยู่
                     i++;
                 }
-                else if(!op.isEmpty() && getScore(op.peek()) < 4 &&getScore(infix.charAt(i)) < 4 && getScore(infix.charAt(i)) <= getScore(op.peek())){
+                else if(!op.isEmpty() && getScore(op.peek()) < 4 
+                        && getScore(infix.charAt(i)) < 4 
+                        && getScore(infix.charAt(i)) <= getScore(op.peek()))                    //เงื่อนไขตรวจสอบหากลำดับความสำคัญของสัญลักษณ์น้อยกว่าทำการดึงตัวก่อนหน้าของ
+                {                                                                               //op มาใส่ใน post
                     post.push(String.valueOf(op.pop()));
                 }
                 else{
-                    op.push(infix.charAt(i));
+                    op.push(infix.charAt(i));                                                   //op เก็บ operator
                     i++;
                 }
             }
         }
 
 
-        while(!op.isEmpty()){
+        while(!op.isEmpty()){                                                                   //เงื่อนไขลูปเมื่อ infix.length จบก่อนแต่ยังเหลือสมาชิกใน op 
             char cur = op.pop();
-            if(getScore(cur) < 4){
-                post.push(String.valueOf(cur));
+            if(getScore(cur) < 4){                                                              //เงื่อนไขเมื่อ score น้อยกว่า 4 ซึ่งเป็น ^ * / + -
+                post.push(String.valueOf(cur));                                                 //ทำการเก็บใส่ใน post
             }
         }
 
-        String out = "";
+        String out = "";                                                                        // out แปลง post stack ให้กลายเป็น String
         while(!post.isEmpty()){
             out = " " + post.pop() + out;
         }
@@ -146,9 +150,9 @@ public class InfixTranfromer {
         return  newS;
     }
 
-    public int getScore(char op){
-        switch (op) {
-            case '(':
+    public int getScore(char op){          // method ตรวจสอบ op เพื่อส่ง int ที่เป็นลำดับความสำคัญกลับ
+        switch (op) {                      // ให้ลำดับความสำคัญจากมากไปน้อย () ^ * / + -
+            case '(':                      
             case ')':
                 return 4;
             case '^':
