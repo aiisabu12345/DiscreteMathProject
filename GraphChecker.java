@@ -20,27 +20,27 @@ public class GraphChecker {
         graph = new PriorityQueue<>();
     }
 
-    public List<Vertex> getAllVertex() {
+    public List<Vertex> getAllVertex() {                                //method นี้ใช้รับ List allVertex
         return allVertex;
     }
 
-    public List<Edge> getAllEdge() {
+    public List<Edge> getAllEdge() {                                    //method นี้ใช้รับ List allEdge
         return allEdge;
     }
 
-    public void setAllVertex(String data) {
+    public void setAllVertex(String data) {                             //method นี้ใช้กำหนด List allVertex
         for (String s : data.split(" ")) {
             allVertex.add(new Vertex(s));
         }
     }
 
-    public void setAllEdge(String data) {
+    public void setAllEdge(String data) {                               //method นี้ใช้กำหนด List allEdge
         for (String s : data.split(" ")) {
             allEdge.add(new Edge(s));
         }
     }
 
-    public void setTransitionFunc(String data) {
+    public void setTransitionFunc(String data) {                        //method นี้ใช้เชื่อม vertex กับ edge และใส่weightให้edge
         for (String s : data.split(" ")) {
             String[] s2 = s.split(",");
 
@@ -58,8 +58,8 @@ public class GraphChecker {
         }
     }
 
-    public Edge findEdgeByName(String name) {
-        for (Edge e : allEdge) {
+    public Edge findEdgeByName(String name) {                              //method นื้ใช้หาEdge ในList allEdge
+        for (Edge e : allEdge) {                                           //ที่มีname == parameter name
             if (e.getName().equals(name)) {
                 return e;
             }
@@ -67,8 +67,8 @@ public class GraphChecker {
         return null;
     }
 
-    public Vertex findVertexByName(String name) {
-        for (Vertex v : allVertex) {
+    public Vertex findVertexByName(String name) {                          //method นี้ใช้หาVertex ในList allVertex
+        for (Vertex v : allVertex) {                                       //ที่มีname == parameter name
             if (v.getName().equals(name)) {
                 return v;
             }
@@ -76,11 +76,11 @@ public class GraphChecker {
         return null;
     }
 
-    public boolean CheckContinue() {
-        Set<Vertex> passedVertex = new HashSet<>();
-        Set<Edge> passEdges = new HashSet<>();
-        Queue<Edge> temGraph = new PriorityQueue<>(graph);
-        temGraph.add(graph.peek());
+    public boolean CheckContinue() {                                        //method นี้ใช้ตรวจสอบว่าgraphนี้เป็นgraphต่อเนื่องหรือไม่
+        Set<Vertex> passedVertex = new HashSet<>();                         //ลองไล่ทุกEdge ใน List allEdges
+        Set<Edge> passEdges = new HashSet<>();                              //แล้วเก็บVertexที่เคยผ่านในset
+        Queue<Edge> temGraph = new PriorityQueue<>(graph);                  //แล้วตรวจสอบว่า set.size() == allEdges.size()หรือไม่
+        temGraph.add(graph.peek());                                         //ถ้าใช่จะได้ว่า graphนี้เป็นgraphต่อเนื่อง
         while (!temGraph.isEmpty()) {
             Edge cur = temGraph.poll();
             cur.getAllVertex()
