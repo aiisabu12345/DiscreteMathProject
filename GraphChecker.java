@@ -20,27 +20,27 @@ public class GraphChecker {
         graph = new PriorityQueue<>();
     }
 
-    public List<Vertex> getAllVertex() {                                //method นี้ใช้รับ List allVertex
+    public List<Vertex> getAllVertex() {
         return allVertex;
     }
 
-    public List<Edge> getAllEdge() {                                    //method นี้ใช้รับ List allEdge
+    public List<Edge> getAllEdge() {
         return allEdge;
     }
 
-    public void setAllVertex(String data) {                             //method นี้ใช้กำหนด List allVertex
+    public void setAllVertex(String data) {
         for (String s : data.split(" ")) {
             allVertex.add(new Vertex(s));
         }
     }
 
-    public void setAllEdge(String data) {                               //method นี้ใช้กำหนด List allEdge
+    public void setAllEdge(String data) {
         for (String s : data.split(" ")) {
             allEdge.add(new Edge(s));
         }
     }
 
-    public void setTransitionFunc(String data) {                        //method นี้ใช้เชื่อม vertex กับ edge และใส่weightให้edge
+    public void setTransitionFunc(String data) {
         for (String s : data.split(" ")) {
             String[] s2 = s.split(",");
 
@@ -58,8 +58,8 @@ public class GraphChecker {
         }
     }
 
-    public Edge findEdgeByName(String name) {                              //method นื้ใช้หาEdge ในList allEdge
-        for (Edge e : allEdge) {                                           //ที่มีname == parameter name
+    public Edge findEdgeByName(String name) {
+        for (Edge e : allEdge) {
             if (e.getName().equals(name)) {
                 return e;
             }
@@ -67,8 +67,8 @@ public class GraphChecker {
         return null;
     }
 
-    public Vertex findVertexByName(String name) {                          //method นี้ใช้หาVertex ในList allVertex
-        for (Vertex v : allVertex) {                                       //ที่มีname == parameter name
+    public Vertex findVertexByName(String name) {
+        for (Vertex v : allVertex) {
             if (v.getName().equals(name)) {
                 return v;
             }
@@ -76,11 +76,11 @@ public class GraphChecker {
         return null;
     }
 
-    public boolean CheckContinue() {                                        //method นี้ใช้ตรวจสอบว่าgraphนี้เป็นgraphต่อเนื่องหรือไม่
-        Set<Vertex> passedVertex = new HashSet<>();                         //ลองไล่ทุกEdge ใน List allEdges
-        Set<Edge> passEdges = new HashSet<>();                              //แล้วเก็บVertexที่เคยผ่านในset
-        Queue<Edge> temGraph = new PriorityQueue<>(graph);                  //แล้วตรวจสอบว่า set.size() == allEdges.size()หรือไม่
-        temGraph.add(graph.peek());                                         //ถ้าใช่จะได้ว่า graphนี้เป็นgraphต่อเนื่อง
+    public boolean CheckContinue() {
+        Set<Vertex> passedVertex = new HashSet<>();
+        Set<Edge> passEdges = new HashSet<>();
+        Queue<Edge> temGraph = new PriorityQueue<>(graph);
+        temGraph.add(graph.peek());
         while (!temGraph.isEmpty()) {
             Edge cur = temGraph.poll();
             cur.getAllVertex()
@@ -98,44 +98,40 @@ public class GraphChecker {
         return passedVertex.size() == allVertex.size();
     }
 
-    public void spanningTree() { // เช็ค spanning tree
-        if (allEdge.size() != allVertex.size() - 1) { // ถ้า edge ไม่เท่ากับ vertex-1 แสดงว่าไม่ใช่ spanning tree
-            System.out.println("Graph is NOT a Spanning Tree");
+    public void findAllSpanningTrees() {                                                //method นี้ใช้หา spanning tree ทั้งหมดของ graph
+        int needEdge = allVertex.size() - 1;                                            //โดยใช้วิธี backtracking เพื่อเลือก edge ทีละเส้น
+        List<Edge> current = new ArrayList<>();                                         //หลักการคือ spanning tree ต้องมีจำนวน edge = vertex - 1
+                                                                                        //ดังนั้นจะสร้างชุดของ edge ที่มีขนาด vertex-1
+        backtrackSpanningTree(0, current, needEdge);                             //แล้วส่งไปตรวจสอบว่าเป็น spanning tree จริงหรือไม่
+                                                                                        //โดยการเรียก method backtrackSpanningTree()
+    }
+
+    private void backtrackSpanningTree(int index, List<Edge> current, int needEdge) {   //method นี้ใช้สร้างชุด edge ทุกแบบที่เป็นไปได้
+        if (current.size() == needEdge) {                                               //โดยใช้ backtracking ไล่เลือก edge จาก allEdge
+                                                                                        //เมื่อจำนวน edge ใน current เท่ากับ vertex-1
+            Queue<Edge> tree = new LinkedList<>(current);                               //จะนำชุด edge นี้ไปตรวจสอบว่าเป็น spanning tree หรือไม่
+                                                                                        //โดยตรวจสอบว่า graph connected และไม่มี circle
+            if (isConnectedTree(tree)) {
+                System.out.println("Spanning Tree: " + tree);
+            }
             return;
         }
 
-        Set<Vertex> visited = new HashSet<>(); // เก็บ vertex ตัวที่ไปถึงแล้ว
-
-        Queue<Vertex> queue = new LinkedList<>(); // เก็บ vertex ที่จะไปตรวจต่อ
-
-        Vertex start = allVertex.get(0); // เลือกจุดเริ่ม เริ่มจาก vertex ตัวแรก แล้วเพิ่มใน visited กับ queue
-        visited.add(start);
-        queue.add(start);
-
-        while (!queue.isEmpty()) { // ทำการลูปจนกว่า queue จะว่าง
-
-            Vertex current = queue.poll(); // ดึง vertex ปัจจุบันออกมา
-
-            for (Edge e : current.getAllEdge()) { // วนดู Edge ทุกเส้นที่เชื่อมกับ current
-                for (Vertex v : e.getAllVertex()) { // วนดู Vertex ที่อยู่ใน Edge นั้น
-
-                    if (!visited.contains(v)) { // ถ้า vertex นี้ ยังไม่เคย visited เพิ่มเข้า visited กับ queue
-                                                // แล้วไปต่อ
-                        visited.add(v);
-                        queue.add(v);
-                    }
-                }
-            }
+        if (index >= allEdge.size()) {
+            return;
         }
 
-        if (visited.size() == allVertex.size()) { // ตรวจว่าครบทุก vertex ไหม ถ้าเท่ากันแปลว่า graph เชื่อมต่อกันทั้งหมด
-                                                  // แสดงว่าเป็น spanning tree
-            System.out.println("Graph is a Spanning Tree");
-        }
+        Edge e = allEdge.get(index);
 
-        else { // ถ้าไม่เท่ากัน แปลว่า graph ไม่ connected แสดงว่าไม่เป็น spanning tree
-            System.out.println("Graph is NOT a Spanning Tree");
-        }
+        Queue<Edge> temp = new LinkedList<>(current);
+
+        if (!isCircle(temp, e)) {                                                       //ตรวจสอบว่าถ้าเพิ่ม edge e เข้าไปในชุด edge ปัจจุบันแล้วจะเกิด circle หรือไม่
+            current.add(e);                                                             //ถ้าไม่เกิด circle จึงสามารถเพิ่ม edge นี้ใน spanning tree ได้
+            backtrackSpanningTree(index + 1, current, needEdge);                        //เพิ่ม edge e ลงในชุด edge ปัจจุบัน
+            current.remove(current.size() - 1);                                         //เรียก recursion เพื่อเลือก edge ถัดไป
+        }                                                                               //ลบ edge ที่เพิ่มออก เพื่อลอง edge อื่น
+
+        backtrackSpanningTree(index + 1, current, needEdge);
     }
 
     public void prim(String rootString) {                                   //method นี้ใช้หา minimum spanning tree โดยใช้prim algorithm
@@ -225,5 +221,49 @@ public class GraphChecker {
         }
 
         return false;
+    }
+
+    private boolean isConnectedTree(Queue<Edge> edges) {                    //method นี้ใช้ตรวจสอบว่า edge ที่เลือกมาสามารถสร้าง spanning tree ได้หรือไม่
+                                                                            //โดย spanning tree ต้องมีจำนวน edge = vertex - 1
+                                                                            //และ graph ต้อง connected คือสามารถเดินไปได้ครบทุก vertex
+                                                                            //การตรวจสอบจะใช้ BFS โดยเริ่มจากหนึ่งใน vertex ที่อยู่ใน edge
+                                                                            //แล้วไล่เดินตาม edge ที่มีอยู่ใน parameter edges
+
+        if (edges.size() != allVertex.size() - 1) {
+            return false;
+        }
+
+        Set<Vertex> visited = new HashSet<>();
+        Queue<Vertex> q = new LinkedList<>();
+
+        Edge first = edges.peek();
+        if (first == null) {
+            return false;
+        }
+
+        Vertex start = first.getAllVertex().iterator().next();
+        visited.add(start);
+        q.add(start);
+
+        while (!q.isEmpty()) {
+
+            Vertex v = q.poll();
+
+            for (Edge e : edges) {
+
+                if (e.getAllVertex().contains(v)) {
+
+                    for (Vertex next : e.getAllVertex()) {
+
+                        if (!visited.contains(next)) {
+                            visited.add(next);
+                            q.add(next);
+                        }
+                    }
+                }
+            }
+        }
+
+        return visited.size() == allVertex.size();
     }
 }

@@ -78,7 +78,7 @@ public class Front {
             char op = sc.next().charAt(0);
             switch (op) {
                 case '1':
-                    g.spanningTree();
+                    g.findAllSpanningTrees();
                     break;
                 case '2':
                     System.out.println("Enter root vertex:");
