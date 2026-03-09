@@ -265,11 +265,6 @@ public class GraphChecker {
         });
         passedVertex.add(vStart);
 
-        // debug
-        if (edge.getValue() == 4) {
-            System.out.println("temEdges = " + temEdges);
-        }
-
         while (!temQueue.isEmpty()) {
             Edge cur = temQueue.poll();
             passedEdges.add(cur);
