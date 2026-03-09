@@ -5,7 +5,7 @@ public class Front {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.println(
-                    "Enter your choice:\n1.find prefix,postfix,alu\n2.find minimum spanning tree\nPress x to exit program");
+                    "Main menu\nEnter your choice:\n1.Expression Tools\n2.Graph Algorithm\nPress x to exit program");
             char op = sc.next().charAt(0);
             switch (op) {
                 case '1':
@@ -43,7 +43,7 @@ public class Front {
                 case '3':
                     System.out.println("Enter infix:");
                     input = sc.next();
-                    System.out.println("Sum With Alu: " + t.callLikeAlu(input));
+                    System.out.println("Result With Alu: " + t.callLikeAlu(input));
                     break;
                 case 'x':
                     start();
