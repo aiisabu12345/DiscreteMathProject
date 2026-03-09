@@ -214,7 +214,7 @@ public class GraphChecker {
         }
 
         System.out.println(mst);
-        System.out.println(mst.stream()
+        System.out.println("Weight = "+mst.stream()
                 .map(Edge::getValue)
                 .reduce(0, (a, b) -> a + b));
     }
@@ -245,7 +245,7 @@ public class GraphChecker {
             mst.add(cur);
         }
         System.out.println(mst);
-        System.out.println(mst.stream()
+        System.out.println("Weight = "+mst.stream()
                 .map(Edge::getValue)
                 .reduce(0, (a, b) -> a + b));
     }
