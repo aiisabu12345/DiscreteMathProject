@@ -14,8 +14,6 @@ public class GraphChecker {
     private String[] route;
     private Queue<Edge> graph;
 
-    private int[][] adjMatrix;
-
     public GraphChecker() {
         allVertex = new ArrayList<>();
         allEdge = new ArrayList<>();
@@ -76,61 +74,6 @@ public class GraphChecker {
             }
         }
         return null;
-    }
-
-    public void setAdjMetrix() {
-        adjMatrix = new int[allVertex.size()][allVertex.size()];
-        for (int i = 0; i < allVertex.size(); i++) {
-            for (int j = i; j < allVertex.size(); j++) {
-                int count = 0;
-                Vertex v1 = allVertex.get(i);
-                Vertex v2 = allVertex.get(j);
-                Set<Edge> e1 = v1.getAllEdge();
-                for (Edge e : e1) {
-                    Set<Vertex> setV = e.getAllVertex();
-                    if (i == j) {
-                        if (setV.size() == 1) {
-                            count++;
-                        }
-                    } else {
-                        if (setV.contains(v2)) {
-                            count++;
-                        }
-                    }
-                }
-                adjMatrix[i][j] = count;
-                adjMatrix[j][i] = count;
-            }
-        }
-
-    }
-
-    public void findAdjMatrixN(int n) {
-        int[][] newAdjMatrix = adjMatrix.clone();
-        int[][] temAdjMatrix;
-
-        while (--n > 0) {
-            temAdjMatrix = new int[newAdjMatrix.length][newAdjMatrix[0].length];
-            for (int i = 0; i < newAdjMatrix.length; i++) {
-                for (int j = i; j < newAdjMatrix[0].length; j++) {
-                    int count = 0;
-                    for (int k = 0; k < newAdjMatrix[0].length; k++) {
-                        count += newAdjMatrix[i][k] * adjMatrix[k][j];
-                    }
-                    temAdjMatrix[i][j] = count;
-                    temAdjMatrix[j][i] = count;
-                }
-            }
-            newAdjMatrix = temAdjMatrix.clone();
-        }
-
-        for (int i = 0; i < newAdjMatrix.length; i++) {
-            for (int j = 0; j < newAdjMatrix[0].length; j++) {
-                System.out.print(newAdjMatrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 
     public boolean CheckContinue() {
@@ -195,14 +138,14 @@ public class GraphChecker {
         }
     }
 
-    public void prim(String rootString) {
-        Set<Vertex> passVertexs = new HashSet<>();
-        Queue<Edge> mst = new LinkedList<>();
-        Queue<Edge> connectedEdges = new PriorityQueue<>();
-        Vertex root = findVertexByName(rootString);
-        passVertexs.add(root);
-        root.getAllEdge().forEach(connectedEdges::add);
-        while (!connectedEdges.isEmpty()) {
+    public void prim(String rootString) {                                   //method นี้ใช้หา minimum spanning tree โดยใช้prim algorithm
+        Set<Vertex> passVertexs = new HashSet<>();                          //โดย root vertex คือ vertex ที่มีname เท่ากับ parameter rootString
+        Queue<Edge> mst = new LinkedList<>();                               //method นี้จะทำการเก็บEdge ที่สามารถเดินไปได้ไว้ใน PriorityQueue connectedEdges
+        Queue<Edge> connectedEdges = new PriorityQueue<>();                 //โดยเริ่มแรกจะเก็บEdge ที่เชื่อมกับ root vertex ก่อน
+        Vertex root = findVertexByName(rootString);                         //เพื่อให้ poll edge ที่มี weight น้อยสุดเสมอ
+        passVertexs.add(root);                                              //แล้วตรวจสอบว่าถ้าใช้edgeนี้แล้วจะทำให้ เป็นcircleหรือไม่
+        root.getAllEdge().forEach(connectedEdges::add);                     //ด้วยการตรวจว่า ปลายทางนี้เป็น vertex ที่เคยผ่านหรือไม่
+        while (!connectedEdges.isEmpty()) {                                 //ถ้าใช่ก็จะไม่ใช้edgeนี้ โดยจะทำจนกว่า connectedEdgesจะว่าง
             Edge cur = connectedEdges.poll();
             Vertex v2 = getOtherVertex(cur, passVertexs);
             if (v2 == null) {
@@ -219,23 +162,22 @@ public class GraphChecker {
                 .reduce(0, (a, b) -> a + b));
     }
 
-    public Vertex getOtherVertex(Edge e, Set<Vertex> passVertexs) {
-        for (Vertex v : e.getAllVertex()) {
-            if (!passVertexs.contains(v)) {
+    public Vertex getOtherVertex(Edge e, Set<Vertex> passVertexs) {         //method ใช้หาvertexที่ถูกเชื่อมด้วยparameter e
+        for (Vertex v : e.getAllVertex()) {                                 //และไม่ได้อยู่ใน parameter passVertexs
+            if (!passVertexs.contains(v)) {                                 //ถ้าไม่มี return null
                 return v;
             }
         }
         return null;
     }
 
-    public void kruskal() {
-        Queue<Edge> pqEdge = new PriorityQueue<>(graph);
-        Set<Vertex> passedVertex = new HashSet<>();
-        Queue<Edge> mst = new LinkedList<>();
-
-        while (!pqEdge.isEmpty()) {
-            Edge cur = pqEdge.poll();
-            Set<Vertex> passedVertexs = new HashSet<>();
+    public void kruskal() {                                                 //method นี้ใช้หา minimum spanning tree โดยใช้kruskal algorithm
+        Queue<Edge> pqEdge = new PriorityQueue<>(graph);                    //โดยเก็บทุกedgeในgraph ไว้ในPriorityQueue pqEdge
+        Queue<Edge> mst = new LinkedList<>();                               //เมื่อpollแล้วจะได้edgeที่มีweightน้อยสุดก่อน
+                                                                            //เพื่อที่จะไล่ edge จากweightน้อยสุดไปมากสุด ตามkruskal algorithm
+        while (!pqEdge.isEmpty()) {                                         //แล้วตรวจสอบว่าถ้าใช้edgeนี้แล้วจะทำให้ เป็นcircleหรือไม่
+            Edge cur = pqEdge.poll();                                       //ด้วยการตรวจว่า ปลายทางนี้เป็น vertex ที่เคยผ่านหรือไม่
+            Set<Vertex> passedVertexs = new HashSet<>();                    //ถ้าใช่ก็จะไม่ใช้edgeนี้ โดยจะทำจนกว่า pqEdgeจะว่าง
 
             if (isCircle(mst, cur)) {
                 continue;
@@ -250,12 +192,12 @@ public class GraphChecker {
                 .reduce(0, (a, b) -> a + b));
     }
 
-    public boolean isCircle(Queue<Edge> oriEdges, Edge edge) {
-        Vertex vStart = edge.getAllVertex().iterator().next();
-        Set<Edge> temEdges = new HashSet<>(oriEdges);
-        temEdges.add(edge);
-        Queue<Edge> temQueue = new LinkedList<>();
-        Set<Vertex> passedVertex = new HashSet<>();
+    public boolean isCircle(Queue<Edge> oriEdges, Edge edge) {              //method นี้ใช้ตรวจสอบว่าถ้าใช้ parameter edge ในspanning tree
+        Vertex vStart = edge.getAllVertex().iterator().next();              //จะทำให้เป็นcircleหรือไม่
+        Set<Edge> temEdges = new HashSet<>(oriEdges);                       //โดยการไล่เดินตามedgeทั้งหมดที่อยู่ใน temEdges
+        temEdges.add(edge);                                                 //โดยก่อนไล่จะเพิ่มparameter edge ใน temEdgesก่อน
+        Queue<Edge> temQueue = new LinkedList<>();                          //เพื่อเป็นการจำลองกรณีที่ใช้edgeนี้
+        Set<Vertex> passedVertex = new HashSet<>();                         //แล้วถ้าเดินกลับมาvertexที่เคยผ่านจะได้ว่ากรณีนี้เป็นcircle
         Set<Edge> passedEdges = new HashSet<>();
 
         vStart.getAllEdge().forEach(e -> {

@@ -45,8 +45,6 @@ public class test1 {
         System.out.println("Is connected: " + checker.CheckContinue());
 
         System.out.println("\n=== 2. Adjacency Matrix (Path length 1) ===");
-        checker.setAdjMetrix();
-        checker.findAdjMatrixN(1);
 
         System.out.println("\n=== 3. Kruskal's MST Result ===");
         // จากรูปเฉลย Total Weight ต้องได้ 51
