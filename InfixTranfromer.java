@@ -12,13 +12,16 @@ public class InfixTranfromer {
                 while(i< infix.length() && infix.charAt(i) >= '0'                               // เงื่อนไขตรวจสอบหลักที่เป็นเลข
                         && infix.charAt(i) <= '9'){
                     tem += infix.charAt(i);
-                    i++;                                                                        // post เก็บ tem
+                    i++;                                                                        
                 }
-                post.push(tem);
+                System.out.println("push " + tem + " into post : " + post);
+                post.push(tem);                                                                 // post เก็บ tem
             }
             else{
                 if(infix.charAt(i) == ')'){                                                     // เงื่อนไชดัก ) 
-                    while(!op.isEmpty()&&op.peek() != '('){                                     // เงื่อนไขเก็บ operator จนกว่าจะเจอ (
+                    while(!op.isEmpty()&&op.peek() != '('){                                     // เงื่อนไขเก็บ operator จนกว่าจะเจอ (                      
+                        System.out.println("pull " + op.peek() + " from op : " + op 
+                        + " push into post : " + post);
                         post.push(String.valueOf(op.pop()));                                    
                     }
                     if(!op.isEmpty())op.pop();                                                  //เงื่อนไขให้ op pop อีกหากยังมีอยู่
@@ -28,9 +31,12 @@ public class InfixTranfromer {
                         && getScore(infix.charAt(i)) < 4 
                         && getScore(infix.charAt(i)) <= getScore(op.peek()))                    //เงื่อนไขตรวจสอบหากลำดับความสำคัญของสัญลักษณ์น้อยกว่าทำการดึงตัวก่อนหน้าของ
                 {                                                                               //op มาใส่ใน post
+                    System.out.println("pull " + op.peek() + " from op : " + op 
+                    + " push into post : " + post);
                     post.push(String.valueOf(op.pop()));
                 }
                 else{
+                    System.out.println("push " + infix.charAt(i) + " into op : " +  op);
                     op.push(infix.charAt(i));                                                   //op เก็บ operator
                     i++;
                 }
@@ -41,7 +47,9 @@ public class InfixTranfromer {
         while(!op.isEmpty()){                                                                   //เงื่อนไขลูปเมื่อ infix.length จบก่อนแต่ยังเหลือสมาชิกใน op 
             char cur = op.pop();
             if(getScore(cur) < 4){                                                              //เงื่อนไขเมื่อ score น้อยกว่า 4 ซึ่งเป็น ^ * / + -
-                post.push(String.valueOf(cur));                                                 //ทำการเก็บใส่ใน post
+                System.out.println("pull " + cur + " from op : " + op +                         //และทำการเก็บใส่ใน post
+                 " push into post : " + post);                                                  
+                post.push(String.valueOf(cur));                                                 
             }
         }
 
@@ -65,20 +73,26 @@ public class InfixTranfromer {
                     tem += infix.charAt(i);
                     i++;
                 }
+                System.out.println("push " + tem + " into post : " + post);
                 post.push(tem);
             }
             else{
                 if(infix.charAt(i) == ')'){
                     while(!op.isEmpty()&&op.peek() != '('){
+                        System.out.println("pull " + op.peek() + " from op : " 
+                        + op + " push into post : " + post);
                         post.push(String.valueOf(op.pop()));
                     }
                     if(!op.isEmpty())op.pop();
                     i++;
                 }
                 else if(!op.isEmpty() && getScore(op.peek()) < 4 &&getScore(infix.charAt(i)) < 4 && getScore(infix.charAt(i)) < getScore(op.peek())){
+                    System.out.println("pull " + op.peek() + " from op : " 
+                    + op + " push into post : " + post);
                     post.push(String.valueOf(op.pop()));
                 }
                 else{
+                    System.out.println("push " + infix.charAt(i) + " into op : " + op);
                     op.push(infix.charAt(i));
                     i++;
                 }
@@ -89,6 +103,7 @@ public class InfixTranfromer {
         while(!op.isEmpty()){
             char cur = op.pop();
             if(getScore(cur) < 4){
+                System.out.println("pull " + cur + " from op : " + op + " push into post : " + post);
                 post.push(String.valueOf(cur));
             }
         }
@@ -166,4 +181,5 @@ public class InfixTranfromer {
         }
         return -1;
     }
+
 }
