@@ -122,11 +122,11 @@ public class InfixTranfromer {
         String postfix = findInToPost(s);                                                       // postfix เรียก findInToPost เพื่อแปลง infix เป็น postfix
         System.out.println("Postfix = "+postfix);
 
-        String[] splitPost = postfix.split(" ");                                         // splitPost แยก postfix 
+        String[] splitPost = postfix.split(" ");                                                // splitPost แยก postfix 
         Stack<Integer> stack = new Stack<>();                                                   // stack ใช้ในการเก็บ postfix ที่ใส่เข้ามา
         System.out.println("\n======================\nProcess:");
         for(String sp : splitPost){                                                             // splitPost เรียก element ในตัวเองมาทีละตัว
-            if(sp.length()>0&&sp.charAt(0) >= '0'&&sp.charAt(0)<='9'){             // เงื่อนไขตรวจสอบการเป็นตัวเลข
+            if(sp.length()>0&&sp.charAt(0) >= '0'&&sp.charAt(0)<='9'){                          // เงื่อนไขตรวจสอบการเป็นตัวเลข
                 System.out.println("Push: "+sp+" in stack");
                 stack.push(Integer.parseInt(sp));                                               // stack ทำการเก็บตัวเลข 
             }
@@ -167,8 +167,8 @@ public class InfixTranfromer {
         return  newS;
     }
 
-    public int getScore(char op){                                                                 // method ตรวจสอบ op เพื่อส่ง int ที่เป็นลำดับความสำคัญกลับ
-        switch (op) {                                                                             // ให้ลำดับความสำคัญจากมากไปน้อย () ^ * / + -
+    public int getScore(char op){                                                                // method ตรวจสอบ op เพื่อส่ง int ที่เป็นลำดับความสำคัญกลับ
+        switch (op) {                                                                            // ให้ลำดับความสำคัญจากมากไปน้อย () ^ * / + -
             case '(':                      
             case ')':
                 return 4;
