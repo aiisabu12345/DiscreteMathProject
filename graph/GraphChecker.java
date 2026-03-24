@@ -286,7 +286,7 @@ public class GraphChecker {
         while(!vertexs.isEmpty()){
             Vertex cur = vertexs.poll();
             visitedVertex.add(cur);
-            Queue<Edge> edges = new LinkedList<>(cur.getAllEdge());
+            Queue<Edge> edges = new PriorityQueue<>(cur.getAllEdge());
             while(!edges.isEmpty()){
                 Edge curEdge = edges.poll();
                 Vertex targetVertex = getOtherVertex(curEdge, visitedVertex);
@@ -299,12 +299,13 @@ public class GraphChecker {
                 int curScore = score.get(targetVertex);
                 int newScore = score.get(cur)+curEdge.getValue();
                 if (curScore > newScore){
+                    System.out.println("Save path " + cur + " -> " + targetVertex + " with new value : " + newScore );
                     score.put(targetVertex, newScore);
                 }
             }
         }
 
-        for(Vertex v : score.keySet()){
+        for(Vertex v : allVertex){
             System.out.printf("%s : %d\n",v.getName(),score.get(v));
         }
     }
