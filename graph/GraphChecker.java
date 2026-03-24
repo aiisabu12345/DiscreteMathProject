@@ -1,11 +1,14 @@
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+
 
 public class GraphChecker {
 
@@ -265,5 +268,44 @@ public class GraphChecker {
         }
 
         return visited.size() == allVertex.size();
+    }
+
+    public void dijkstra (String root){
+
+        Set<Vertex> visitedVertex = new HashSet<>();
+        Queue<Vertex> vertexs = new LinkedList<>();
+        vertexs.add(findVertexByName(root));
+
+        Map<Vertex,Integer> score = new HashMap<>();
+        for(Vertex cur : allVertex){
+            score.put(cur, Integer.MAX_VALUE);
+        }
+
+        score.put(findVertexByName(root),0);
+
+        while(!vertexs.isEmpty()){
+            Vertex cur = vertexs.poll();
+            visitedVertex.add(cur);
+            Queue<Edge> edges = new LinkedList<>(cur.getAllEdge());
+            while(!edges.isEmpty()){
+                Edge curEdge = edges.poll();
+                Vertex targetVertex = getOtherVertex(curEdge, visitedVertex);
+
+                if(targetVertex == null){
+                    continue;
+                }
+                vertexs.add(targetVertex);
+
+                int curScore = score.get(targetVertex);
+                int newScore = score.get(cur)+curEdge.getValue();
+                if (curScore > newScore){
+                    score.put(targetVertex, newScore);
+                }
+            }
+        }
+
+        for(Vertex v : score.keySet()){
+            System.out.printf("%s : %d\n",v.getName(),score.get(v));
+        }
     }
 }

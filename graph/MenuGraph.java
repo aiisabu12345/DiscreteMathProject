@@ -28,17 +28,22 @@ public class MenuGraph{
             char op = sc.next().charAt(0);
             switch (op) {
                 case '1':
-                    g.spanningTree();
+                    g.findAllSpanningTrees();
                     break;
                 case '2':
                     System.out.println("Enter root vertex:");
                     sc.nextLine();
-                    String root = sc.nextLine();
-                    g.prim(root);
+                    String primRoot = sc.nextLine();
+                    g.prim(primRoot);
                     break;
                 case '3':
                     g.kruskal();
                     break;
+                case '4':
+                    System.out.println("Enter root vertex:");
+                    sc.nextLine();
+                    String dijkRoot = sc.nextLine();
+                    g.dijkstra(dijkRoot);
                 case 'x':
                 default:
                     sc.close();
