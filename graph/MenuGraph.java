@@ -6,7 +6,6 @@ public class MenuGraph{
         GraphChecker g = new GraphChecker();
 
         String input;
-        sc.nextLine();
 
         System.out.println("Enter Vertex:");
         input = sc.nextLine();
@@ -24,7 +23,7 @@ public class MenuGraph{
         }
         while (true) {
             System.out.println(
-                    "Enter your choice:\n1.find minimum spanning tree\n2.prim\n3.kruskal\nPress x to back to menu");
+                    "Enter your choice:\n1.find minimum spanning tree\n2.prim\n3.kruskal\n4.dijkstra\nPress x to back to menu");
             char op = sc.next().charAt(0);
             switch (op) {
                 case '1':

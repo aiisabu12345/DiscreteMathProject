@@ -286,7 +286,7 @@ public class GraphChecker {
         while(!vertexs.isEmpty()){
             Vertex cur = vertexs.poll();
             visitedVertex.add(cur);
-            Queue<Edge> edges = new LinkedList<>(cur.getAllEdge());
+            Queue<Edge> edges = new PriorityQueue<>(cur.getAllEdge());
             while(!edges.isEmpty()){
                 Edge curEdge = edges.poll();
                 Vertex targetVertex = getOtherVertex(curEdge, visitedVertex);
